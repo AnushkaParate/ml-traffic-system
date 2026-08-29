@@ -1,10 +1,17 @@
-{% extends "base.html" %}
-{% block title %}Admin Sign Up{% endblock %}
-{% block content %}
-<h2>Traffic Admin Registration</h2>
+{% extends "auth_base.html" %}
+{% block title %}Admin registration{% endblock %}
+{% block side_heading %}Monitor violations and manage challans.{% endblock %}
+{% block side_copy %}Admin accounts get access to the live violation feed, challan management, and signal status dashboard.{% endblock %}
+{% block form_content %}
+<div class="eyebrow">Traffic admin</div>
+<h2>Create an admin account</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Create admin account</button>
+    <button type="submit" class="btn">Create admin account</button>
 </form>
+<div class="auth-footer-link">
+    Not an admin? <a href="{% url 'accounts:signup' %}">Register as a vehicle owner</a><br>
+    Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>
+</div>
 {% endblock %}

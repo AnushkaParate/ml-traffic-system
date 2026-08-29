@@ -1,22 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+<div class="page">
 {% if is_admin %}
-    <h2>Admin Dashboard</h2>
-    <p>Placeholder: violation feed, signal status, and challan management
-    will appear here once the detection/challan apps are wired in
-    (Weeks 3-5).</p>
+    <div class="page-header">
+        <h1>Admin dashboard</h1>
+        <p>Live violation feed, challan management, and signal status.</p>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <h3>Violations today</h3>
+            <div class="stat">&mdash;</div>
+            <span class="tag">Live once detection is wired in &middot; Week 3</span>
+        </div>
+        <div class="card">
+            <h3>Pending challans</h3>
+            <div class="stat">&mdash;</div>
+            <span class="tag">Live once challan app is wired in &middot; Week 4</span>
+        </div>
+        <div class="card">
+            <h3>Active signals</h3>
+            <div class="stat">&mdash;</div>
+            <span class="tag">Live once signal_control is wired in &middot; Week 5</span>
+        </div>
+    </div>
 {% else %}
-    <h2>Welcome, {{ user.username }}</h2>
-    <h3>Your registered vehicles</h3>
-    <ul>
-        {% for v in vehicles %}
-            <li>{{ v.plate_number }} ({{ v.get_vehicle_type_display }})</li>
-        {% empty %}
-            <li>No vehicles registered yet.</li>
-        {% endfor %}
-    </ul>
-    <p>Placeholder: your challan history will appear here once the challan
-    app is built (Week 4).</p>
+    <div class="page-header">
+        <h1>Welcome, {{ user.username }}</h1>
+        <p>Your registered vehicles and challan history.</p>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <h3>Registered vehicles</h3>
+            <ul class="vehicle-list">
+                {% for v in vehicles %}
+                    <li><span class="plate">{{ v.plate_number }}</span><span>{{ v.get_vehicle_type_display }}</span></li>
+                {% empty %}
+                    <li class="empty-state">No vehicles registered yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Challan history</h3>
+            <p class="empty-state">No challans yet. This will populate automatically once the detection pipeline is live &middot; Week 4.</p>
+        </div>
+    </div>
 {% endif %}
+</div>
 {% endblock %}

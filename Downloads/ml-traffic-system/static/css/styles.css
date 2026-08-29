@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --navy-900: #0F2440;
+    --navy-700: #1D3A5F;
+    --navy-500: #2C567F;
+    --amber-500: #E2A93D;
+    --amber-600: #C68A22;
+    --red-500: #C0392B;
+    --red-100: #FBEAE8;
+    --green-600: #2E7D53;
+    --green-100: #E8F4EE;
+    --neutral-50: #F5F6F7;
+    --neutral-100: #E9EBED;
+    --neutral-200: #DADDE1;
+    --neutral-600: #5B6470;
+    --neutral-900: #1A1D21;
+    --white: #FFFFFF;
+    --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--neutral-50);
+    color: var(--neutral-900);
+    line-height: 1.5;
+}
+
+h1, h2, h3, .brand-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    margin: 0;
+}
+
+a { color: var(--navy-500); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Signal mark (signature element) ---------- */
+.signal-mark { display: inline-flex; flex-direction: column; gap: 4px; margin-right: 10px; vertical-align: middle; }
+.signal-mark span { width: 9px; height: 9px; border-radius: 50%; display: block; }
+.signal-mark .r { background: var(--red-500); }
+.signal-mark .a { background: var(--amber-500); }
+.signal-mark .g { background: var(--green-600); }
+
+/* ---------- Top navbar (post-login pages) ---------- */
+.topbar {
+    background: var(--navy-900);
+    color: var(--white);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.topbar .brand { display: flex; align-items: center; color: var(--white); font-size: 18px; }
+.topbar .brand:hover { text-decoration: none; }
+.topbar nav { display: flex; align-items: center; gap: 24px; font-size: 14px; }
+.topbar nav a { color: var(--neutral-100); }
+.topbar nav a:hover { color: var(--white); text-decoration: none; }
+.topbar .role-badge {
+    background: var(--amber-500); color: var(--navy-900); font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em;
+}
+
+.page { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+.page-header { margin-bottom: 28px; }
+.page-header p { color: var(--neutral-600); margin-top: 6px; }
+
+/* ---------- Messages ---------- */
+.msg-list { max-width: 1000px; margin: 16px auto 0; padding: 0 24px; }
+.msg { background: var(--green-100); color: var(--green-600); padding: 10px 16px; border-radius: var(--radius); margin-bottom: 10px; font-size: 14px; }
+
+/* ---------- Cards / grid ---------- */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.card {
+    background: var(--white); border: 1px solid var(--neutral-200); border-radius: 12px;
+    padding: 24px;
+}
+.card h3 { font-size: 15px; color: var(--neutral-600); font-weight: 500; margin-bottom: 4px; }
+.card .stat { font-size: 28px; font-weight: 600; font-family: 'Space Grotesk', sans-serif; margin-bottom: 8px; }
+.card .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--neutral-100); color: var(--neutral-600); }
+
+.vehicle-list, .challan-list { list-style: none; padding: 0; margin: 0; }
+.vehicle-list li, .challan-list li {
+    padding: 12px 0; border-bottom: 1px solid var(--neutral-100); display: flex; justify-content: space-between; font-size: 14px;
+}
+.vehicle-list li:last-child, .challan-list li:last-child { border-bottom: none; }
+.plate { font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: 0.02em; }
+.empty-state { color: var(--neutral-600); font-size: 14px; padding: 12px 0; }
+
+/* ---------- Auth split-screen layout ---------- */
+.auth-wrap { display: flex; min-height: 100vh; }
+.auth-side {
+    flex: 1; background: var(--navy-900); color: var(--white);
+    padding: 60px 48px; display: flex; flex-direction: column; justify-content: center;
+    min-width: 320px;
+}
+.auth-side .brand-name { font-size: 22px; display: flex; align-items: center; margin-bottom: 24px; }
+.auth-side h1 { font-size: 30px; line-height: 1.25; margin-bottom: 16px; max-width: 360px; }
+.auth-side p { color: var(--neutral-200); max-width: 340px; font-size: 15px; }
+.auth-form-side {
+    flex: 1; background: var(--white); display: flex; align-items: center; justify-content: center;
+    padding: 40px 24px;
+}
+.auth-form-card { width: 100%; max-width: 380px; }
+.auth-form-card .eyebrow { font-size: 13px; color: var(--neutral-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.auth-form-card h2 { font-size: 24px; margin-bottom: 24px; }
+
+@media (max-width: 760px) {
+    .auth-wrap { flex-direction: column; }
+    .auth-side { padding: 40px 24px; min-height: 200px; }
+}
+
+/* ---------- Forms ---------- */
+form p { margin: 0 0 16px; }
+form label { display: block; font-size: 13px; font-weight: 500; color: var(--neutral-900); margin-bottom: 6px; }
+form input, form select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--neutral-200); border-radius: var(--radius);
+    font-family: 'Inter', sans-serif; font-size: 14px; background: var(--white); color: var(--neutral-900);
+}
+form input:focus, form select:focus { outline: 2px solid var(--navy-500); outline-offset: 1px; border-color: var(--navy-500); }
+form .helptext { font-size: 12px; color: var(--neutral-600); margin-top: 4px; display: block; }
+.errorlist { list-style: none; padding: 0; margin: 4px 0 0; color: var(--red-500); font-size: 12px; }
+
+.btn {
+    display: inline-block; width: 100%; padding: 11px 20px; border: none; border-radius: var(--radius);
+    background: var(--navy-700); color: var(--white); font-family: 'Inter', sans-serif; font-weight: 500;
+    font-size: 14px; cursor: pointer; text-align: center;
+}
+.btn:hover { background: var(--navy-900); text-decoration: none; }
+.auth-footer-link { margin-top: 20px; font-size: 14px; color: var(--neutral-600); text-align: center; }
+
+/* Trim Django's default password-rule bullet list down to a single hint line */
+form ul { list-style: none; padding: 0; margin: 4px 0 0; }
+form ul li { display: none; }
+form ul li:first-child {
+    display: block; font-size: 0; color: var(--neutral-600);
+}
+form ul li:first-child::before {
+    content: "Use at least 8 characters, not all numbers, not too common.";
+    font-size: 12px;
+}

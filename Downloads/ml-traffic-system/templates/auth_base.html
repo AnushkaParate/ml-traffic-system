@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Traffic Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="auth-wrap">
+    <div class="auth-side">
+        <div class="brand-name">
+            <span class="signal-mark"><span class="r"></span><span class="a"></span><span class="g"></span></span>
+            Traffic Management System
+        </div>
+        <h1>{% block side_heading %}Automated enforcement, from detection to challan.{% endblock %}</h1>
+        <p>{% block side_copy %}Helmet, triple-riding, and signal violations are detected from recorded footage and matched to registered vehicles automatically.{% endblock %}</p>
+    </div>
+    <div class="auth-form-side">
+        <div class="auth-form-card">
+            {% if messages %}
+                {% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}
+            {% endif %}
+            {% block form_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
