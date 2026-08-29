@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<h2>Register (Vehicle Owner)</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create account</button>
+</form>
+<p>Traffic admin? <a href="{% url 'accounts:admin_signup' %}">Sign up here</a>.</p>
+{% endblock %}

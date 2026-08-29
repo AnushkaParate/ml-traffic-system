@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% if is_admin %}
+    <h2>Admin Dashboard</h2>
+    <p>Placeholder: violation feed, signal status, and challan management
+    will appear here once the detection/challan apps are wired in
+    (Weeks 3-5).</p>
+{% else %}
+    <h2>Welcome, {{ user.username }}</h2>
+    <h3>Your registered vehicles</h3>
+    <ul>
+        {% for v in vehicles %}
+            <li>{{ v.plate_number }} ({{ v.get_vehicle_type_display }})</li>
+        {% empty %}
+            <li>No vehicles registered yet.</li>
+        {% endfor %}
+    </ul>
+    <p>Placeholder: your challan history will appear here once the challan
+    app is built (Week 4).</p>
+{% endif %}
+{% endblock %}

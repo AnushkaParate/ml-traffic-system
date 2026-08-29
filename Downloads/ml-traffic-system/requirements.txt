@@ -1,0 +1,8 @@
+django
+ultralytics
+opencv-python
+easyocr
+pillow
+numpy
+reportlab
+python-decouple
