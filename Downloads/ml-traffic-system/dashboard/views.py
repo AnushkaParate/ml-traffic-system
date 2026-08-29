@@ -1,16 +1,30 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from challan.models import Challan
+
 
 @login_required
 def home(request):
-    """Landing page after login. Shows a different view for admins vs
-    regular users. Right now this just confirms auth + role is working --
-    Member A/C will flesh this out in Week 5 with real violation/challan
-    data once the challan app has models populated."""
     is_admin = hasattr(request.user, 'profile') and request.user.profile.is_admin
-    vehicles = request.user.vehicles.all() if not is_admin else []
+
+    if is_admin:
+        recent_challans = Challan.objects.select_related(
+            'violation', 'violation__vehicle', 'violation__vehicle__owner'
+        ).order_by('-issued_at')[:10]
+        return render(request, 'dashboard/home.html', {
+            'is_admin': True,
+            'recent_challans': recent_challans,
+            'total_challans': Challan.objects.count(),
+            'pending_challans': Challan.objects.filter(status=Challan.STATUS_PENDING).count(),
+        })
+
+    vehicles = request.user.vehicles.all()
+    challans = Challan.objects.filter(
+        violation__vehicle__owner=request.user
+    ).select_related('violation').order_by('-issued_at')
     return render(request, 'dashboard/home.html', {
-        'is_admin': is_admin,
+        'is_admin': False,
         'vehicles': vehicles,
+        'challans': challans,
     })

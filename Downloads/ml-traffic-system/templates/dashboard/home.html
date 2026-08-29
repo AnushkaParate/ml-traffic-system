@@ -7,16 +7,14 @@
         <h1>Admin dashboard</h1>
         <p>Live violation feed, challan management, and signal status.</p>
     </div>
-    <div class="card-grid">
+    <div class="card-grid" style="margin-bottom: 24px;">
         <div class="card">
-            <h3>Violations today</h3>
-            <div class="stat">&mdash;</div>
-            <span class="tag">Live once detection is wired in &middot; Week 3</span>
+            <h3>Total challans issued</h3>
+            <div class="stat">{{ total_challans }}</div>
         </div>
         <div class="card">
-            <h3>Pending challans</h3>
-            <div class="stat">&mdash;</div>
-            <span class="tag">Live once challan app is wired in &middot; Week 4</span>
+            <h3>Pending payment</h3>
+            <div class="stat">{{ pending_challans }}</div>
         </div>
         <div class="card">
             <h3>Active signals</h3>
@@ -24,6 +22,22 @@
             <span class="tag">Live once signal_control is wired in &middot; Week 5</span>
         </div>
     </div>
+    <div class="card">
+        <h3>Recent challans</h3>
+        <ul class="challan-list">
+            {% for c in recent_challans %}
+                <li>
+                    <span class="plate">{{ c.violation.vehicle.plate_number }}</span>
+                    <span>{{ c.violation.get_violation_type_display }}</span>
+                    <span>Rs. {{ c.fine_amount }}</span>
+                    <span class="tag">{{ c.get_status_display }}</span>
+                </li>
+            {% empty %}
+                <li class="empty-state">No challans issued yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <p style="margin-top: 20px;"><a href="{% url 'challan:report_violation' %}">+ Report a violation manually</a></p>
 {% else %}
     <div class="page-header">
         <h1>Welcome, {{ user.username }}</h1>
@@ -42,7 +56,18 @@
         </div>
         <div class="card">
             <h3>Challan history</h3>
-            <p class="empty-state">No challans yet. This will populate automatically once the detection pipeline is live &middot; Week 4.</p>
+            <ul class="challan-list">
+                {% for c in challans %}
+                    <li>
+                        <span class="plate">{{ c.violation.vehicle.plate_number }}</span>
+                        <span>{{ c.violation.get_violation_type_display }}</span>
+                        <span>Rs. {{ c.fine_amount }}</span>
+                        <span class="tag">{{ c.get_status_display }}</span>
+                    </li>
+                {% empty %}
+                    <li class="empty-state">No challans yet.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 {% endif %}

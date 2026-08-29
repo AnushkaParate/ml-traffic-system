@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Report a violation{% endblock %}
+{% block content %}
+<div class="page" style="max-width: 480px;">
+    <div class="page-header">
+        <h1>Report a violation</h1>
+        <p>Manually log a violation until detection is wired in automatically.</p>
+    </div>
+    <div class="card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Create challan & notify owner</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -6,6 +6,7 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path('challan/', include('challan.urls')),
     path('', include('dashboard.urls')),
     # detection / anpr / challan / signal_control apps get wired in here
     # as their views are built (Weeks 3-5 of the roadmap).
