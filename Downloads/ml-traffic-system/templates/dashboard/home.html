@@ -37,7 +37,11 @@
             {% endfor %}
         </ul>
     </div>
-    <p style="margin-top: 20px;"><a href="{% url 'challan:report_violation' %}">+ Report a violation manually</a></p>
+    <p style="margin-top: 20px;">
+    <a href="{% url 'challan:report_violation' %}">+ Report a violation manually</a>
+    &nbsp;&middot;&nbsp;
+    <a href="{% url 'challan:all_challans' %}">View all challans</a>
+    </p>
 {% else %}
     <div class="page-header">
         <h1>Welcome, {{ user.username }}</h1>

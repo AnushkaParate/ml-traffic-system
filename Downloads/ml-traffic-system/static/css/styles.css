@@ -59,6 +59,11 @@ a:hover { text-decoration: underline; }
 .topbar nav { display: flex; align-items: center; gap: 24px; font-size: 14px; }
 .topbar nav a { color: var(--neutral-100); }
 .topbar nav a:hover { color: var(--white); text-decoration: none; }
+.topbar nav .logout-btn {
+    background: none; border: none; color: var(--neutral-100); font-family: 'Inter', sans-serif;
+    font-size: 14px; cursor: pointer; padding: 0;
+}
+.topbar nav .logout-btn:hover { color: var(--white); text-decoration: underline; }
 .topbar .role-badge {
     background: var(--amber-500); color: var(--navy-900); font-size: 11px; font-weight: 600;
     padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em;

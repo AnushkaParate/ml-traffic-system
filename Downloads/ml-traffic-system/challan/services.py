@@ -5,15 +5,17 @@ manual admin form (views.py) AND the future automated detection pipeline
 identical behaviour.
 """
 
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import EmailMessage
 
 from .models import Challan, Violation
+from .pdf import generate_challan_pdf
 
 
 def create_violation_and_challan(vehicle, violation_type, video_source='manual-entry',
                                    evidence_image=None, confidence_score=1.0):
-    """Create a Violation + its Challan, then email the vehicle owner.
+    """Create a Violation + its Challan, then email the vehicle owner with
+    a PDF copy of the challan attached.
 
     Returns the created Challan instance. This is the single entry point
     detection code should call once it has: (1) confirmed a violation
@@ -41,17 +43,19 @@ def _send_challan_email(challan):
         return  # nothing to send to -- shouldn't happen since signup requires email
 
     subject = f'E-Challan Issued - {vehicle.plate_number}'
-    message = (
+    body = (
         f'Dear {vehicle.owner.username},\n\n'
         f'A traffic violation has been recorded against your vehicle {vehicle.plate_number}.\n\n'
         f'Violation: {challan.violation.get_violation_type_display()}\n'
-        f'Fine amount: Rs. {challan.fine_amount}\n'
-        f'Challan status: {challan.get_status_display()}\n\n'
-        f'Please log in to the Traffic Management System to view details and pay your fine.\n'
+        f'Fine amount: Rs. {challan.fine_amount}\n\n'
+        f'Your e-challan is attached as a PDF. Please log in to the Traffic '
+        f'Management System to view details and pay your fine.\n'
     )
-    send_mail(
-        subject, message, settings.DEFAULT_FROM_EMAIL, [owner_email],
-        fail_silently=False,
-    )
+
+    email = EmailMessage(subject, body, settings.DEFAULT_FROM_EMAIL, [owner_email])
+    pdf_bytes = generate_challan_pdf(challan)
+    email.attach(f'challan_{challan.pk}.pdf', pdf_bytes, 'application/pdf')
+    email.send(fail_silently=False)
+
     challan.email_sent = True
     challan.save(update_fields=['email_sent'])

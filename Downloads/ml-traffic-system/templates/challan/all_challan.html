@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}All challans{% endblock %}
+{% block content %}
+<div class="page">
+    <div class="page-header">
+        <h1>All challans</h1>
+        <p>Search by plate number or filter by payment status.</p>
+    </div>
+    <form method="get" style="display:flex; gap:12px; margin-bottom:20px; max-width:500px;">
+        <input type="text" name="q" placeholder="Search plate number" value="{{ search }}">
+        <select name="status">
+            <option value="">All statuses</option>
+            <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="paid" {% if status == 'paid' %}selected{% endif %}>Paid</option>
+        </select>
+        <button type="submit" class="btn" style="width:auto; white-space:nowrap;">Filter</button>
+    </form>
+    <div class="card">
+        <ul class="challan-list">
+            {% for c in challans %}
+                <li>
+                    <span class="plate">{{ c.violation.vehicle.plate_number }}</span>
+                    <span>{{ c.violation.get_violation_type_display }}</span>
+                    <span>Rs. {{ c.fine_amount }}</span>
+                    <span class="tag">{{ c.get_status_display }}</span>
+                    <a href="{% url 'challan:download_pdf' c.pk %}" target="_blank">PDF</a>
+                    {% if c.status == 'pending' %}
+                    <form method="post" action="{% url 'challan:mark_as_paid' c.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn" style="color: var(--navy-500); text-decoration: underline;">Pay now</button>
+                    </form>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li class="empty-state">No challans yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
