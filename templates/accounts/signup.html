@@ -1,0 +1,17 @@
+{% extends "auth_base.html" %}
+{% block title %}Create your account{% endblock %}
+{% block side_heading %}Register your vehicle once. We'll handle the rest.{% endblock %}
+{% block side_copy %}Your registered number plate is what links any detected violation back to you, so a challan and email alert can be sent automatically.{% endblock %}
+{% block form_content %}
+<div class="eyebrow">Vehicle owner</div>
+<h2>Create your account</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Create account</button>
+</form>
+<div class="auth-footer-link">
+    Already registered? <a href="{% url 'accounts:login' %}">Log in</a><br>
+    Traffic admin? <a href="{% url 'accounts:admin_signup' %}">Sign up here</a>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Traffic Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="{% url 'dashboard:home' %}">
+        <span class="signal-mark"><span class="r"></span><span class="a"></span><span class="g"></span></span>
+        <span class="brand-name">Traffic Management System</span>
+    </a>
+    <nav>
+    {% if user.is_authenticated %}
+        {% if user.profile.is_admin %}<span class="role-badge">Admin</span>{% endif %}
+        {% if user.profile.is_admin %}
+            <a href="{% url 'challan:my_challans' %}">My Challans</a>
+            <a href="{% url 'challan:all_challans' %}">All Challans</a>
+        {% endif %}
+        <span>{{ user.username }}</span>
+        <form method="post" action="{% url 'accounts:logout' %}" style="display:inline">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Log out</button>
+        </form>
+    {% else %}
+        <a href="{% url 'accounts:login' %}">Log in</a>
+        <a href="{% url 'accounts:signup' %}">Sign up</a>
+    {% endif %}
+    </nav>
+</header>
+
+{% if messages %}
+<div class="msg-list">
+    {% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+</body>
+</html>

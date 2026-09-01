@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Signal simulator{% endblock %}
+{% block content %}
+<div class="page">
+    <div class="page-header">
+        <h1>Intersection signal simulator</h1>
+        <p>Enter vehicle counts per lane (standing in for the detection model) to see the computed signal states.</p>
+    </div>
+
+    <div class="card" style="margin-bottom: 24px;">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Run signal decision</button>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="card" style="margin-bottom: 24px;">
+        <h3>Live signal cycle</h3>
+        <p style="color: var(--neutral-600); font-size: 13px; margin-top: 0;">
+            Lanes rotate anti-clockwise (North &rarr; West &rarr; South &rarr; East). Each gets
+            15s green + 5s amber by default; busier lanes get extra green time (up to 30s).
+            Empty lanes are skipped entirely. An ambulance in any lane pre-empts the rotation immediately.
+        </p>
+        <div class="card-grid" id="cycle-grid" data-cycle='{{ cycle_json }}'></div>
+    </div>
+    <script>
+        const grid = document.getElementById('cycle-grid');
+        const cycle = JSON.parse(grid.dataset.cycle);
+        const ALL_LANES = ['north', 'south', 'east', 'west'];
+        const AMBER_SECONDS = 5;
+        const COLORS = { green: '#2E7D53', amber: '#E2A93D', red: '#C0392B', off: 'transparent' };
+
+        ALL_LANES.forEach(lane => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.style.cssText = 'text-align:center; border:none; background: var(--neutral-50);';
+            div.innerHTML = `
+                <div class="signal-mark" style="flex-direction:row; justify-content:center; margin-bottom:8px;">
+                    <span id="dot-${lane}" style="width:18px; height:18px;"></span>
+                </div>
+                <h3 style="text-transform:capitalize;">${lane}</h3>
+                <div class="stat" id="state-${lane}" style="font-size:15px;">&mdash;</div>
+                <div id="timer-${lane}" style="color: var(--neutral-600); font-size:13px;"></div>
+            `;
+            grid.appendChild(div);
+        });
+
+        let idx = 0;
+        let phase = 'green';
+        let timeLeft = cycle.length ? cycle[0].green_seconds : 0;
+
+        function render() {
+            ALL_LANES.forEach(lane => {
+                const inCycle = cycle.some(c => c.lane === lane);
+                const dot = document.getElementById(`dot-${lane}`);
+                const stateEl = document.getElementById(`state-${lane}`);
+                const timerEl = document.getElementById(`timer-${lane}`);
+
+                if (!inCycle) {
+                    dot.style.background = COLORS.off;
+                    dot.style.border = '1px solid var(--neutral-200)';
+                    stateEl.textContent = 'OFF';
+                    timerEl.textContent = 'No vehicles';
+                    return;
+                }
+                const isCurrent = cycle[idx].lane === lane;
+                if (isCurrent) {
+                    dot.style.background = COLORS[phase];
+                    dot.style.border = `1px solid ${COLORS[phase]}`;
+                    stateEl.textContent = phase.toUpperCase();
+                    const reasonNote = cycle[idx].reason === 'ambulance' ? ' (ambulance priority)'
+                    : cycle[idx].reason === 'density' ? ' (extra time - busy lane)' : '';
+                    timerEl.textContent = `${timeLeft}s remaining${phase === 'green' ? reasonNote : ''}`;
+                } else {
+                    dot.style.background = COLORS.red;
+                    dot.style.border = `1px solid ${COLORS.red}`;
+                    stateEl.textContent = 'RED';
+                    timerEl.textContent = 'Waiting for turn';
+                }
+            });
+        }
+
+        if (cycle.length > 0) {
+            render();
+            setInterval(() => {
+                timeLeft -= 1;
+                if (timeLeft <= 0) {
+                    if (phase === 'green') {
+                        phase = 'amber';
+                        timeLeft = AMBER_SECONDS;
+                    } else {
+                        phase = 'green';
+                        idx = (idx + 1) % cycle.length;
+                        timeLeft = cycle[idx].green_seconds;
+                    }
+                }
+                render();
+            }, 1000);
+        } else {
+            render();
+        }
+    </script>
+    {% endif %}
+
+    <div class="card">
+        <h3>Recent signal log</h3>
+        <ul class="challan-list">
+            {% for log in recent_logs %}
+                <li>
+                    <span>{{ log.intersection_id }} / {{ log.lane|capfirst }}</span>
+                    <span>{{ log.vehicle_count }} vehicles</span>
+                    {% if log.ambulance_detected %}<span class="tag" style="background: var(--red-100); color: var(--red-500);">Ambulance</span>{% endif %}
+                    <span class="tag">{{ log.get_signal_state_display }}</span>
+                    <span style="color: var(--neutral-600); font-size: 12px;">{{ log.timestamp|date:"H:i:s" }}</span>
+                </li>
+            {% empty %}
+                <li class="empty-state">No signal decisions logged yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

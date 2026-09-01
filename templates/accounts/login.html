@@ -1,0 +1,12 @@
+{% extends "auth_base.html" %}
+{% block title %}Log in{% endblock %}
+{% block form_content %}
+<div class="eyebrow">Vehicle owners & traffic admins</div>
+<h2>Log in to your account</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Log in</button>
+</form>
+<div class="auth-footer-link">Don't have an account? <a href="{% url 'accounts:signup' %}">Sign up</a></div>
+{% endblock %}
